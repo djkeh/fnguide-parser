@@ -4,6 +4,7 @@
 import sys
 import requests
 import csv
+import logging
 from bs4 import BeautifulSoup
 from pprint import pprint
 
@@ -51,10 +52,11 @@ def parse(text, gicode):
     return result
 
 def format(str):
-    return str.replace('\xa0', '')
+    val = str.replace(',', '')
+    return val if val.isnumeric() else ''
 
-def export_to_csv(data):
-    with open('data.csv', 'w', newline = '') as csvfile:
+def init_csv(data):
+    with open('data.csv', 'w', newline = '', encoding = 'utf8') as csvfile:
         fieldnames = [ \
             data['corp_name']['title'], \
             data['gicode']['title'], \
@@ -69,6 +71,24 @@ def export_to_csv(data):
         writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
 
         writer.writeheader()
+
+def export_to_csv(data):
+    logging.debug("exporting: " + data['gicode']['value'])
+
+    with open('data.csv', 'a', newline = '', encoding = 'utf8') as csvfile:
+        fieldnames = [ \
+            data['corp_name']['title'], \
+            data['gicode']['title'], \
+            data['annual_revenue']['title'], \
+            data['annual_profit']['title'], \
+            data['annual_roe']['title'], \
+            data['quarter_revenue']['title'], \
+            data['quarter_profit']['title'], \
+            data['quarter_roe']['title'] \
+            ]
+        
+        writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
+
         writer.writerow({ \
             data['corp_name']['title']: data['corp_name']['value'], \
             data['gicode']['title']: data['gicode']['value'], \
@@ -80,6 +100,15 @@ def export_to_csv(data):
             data['quarter_roe']['title']: data['quarter_roe']['value'] \
             })
 
+def read_codes():
+    gicodes = []
+
+    with open('gicodes.txt', 'r', encoding = 'utf8') as file:
+        for row in file:
+            gicodes.append(row.rstrip())
+
+    return gicodes
+
 
 def main():
     args = sys.argv[1:]
@@ -88,13 +117,18 @@ def main():
         print('usage: main [gicode]')
         sys.exit(1)
 
-    gicode = args[0]
-    html = get_html(gicode)
-    data = parse(html, gicode)
+    gicodes = args[0].split(',')
+    html = get_html(gicodes[0])
+    data = parse(html, gicodes[0])
 
-    pprint(data)
-    export_to_csv(data)
+    init_csv(data)
 
-# Main body
+    for gicode in read_codes():
+        html = get_html(gicode)
+        data = parse(html, gicode)
+        
+        export_to_csv(data)
+
+
 if __name__ == '__main__':
     main()
