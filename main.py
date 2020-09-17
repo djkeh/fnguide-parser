@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 
 
-def getHtml(gicode):
+def get_html(gicode):
     url = 'https://comp.fnguide.com/SVO2/ASP/SVD_main.asp'
     param = {'gicode': gicode}
     r = requests.get(url, params = param)
@@ -56,7 +56,7 @@ def main():
         sys.exit(1)
 
     gicode = args[0]
-    html = getHtml(gicode)
+    html = get_html(gicode)
     data = parse(html, gicode)
 
     pprint(data)
