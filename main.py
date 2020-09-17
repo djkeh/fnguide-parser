@@ -36,12 +36,15 @@ def parse(text, gicode):
     net_quarter_profit  = body_rows[1].find_all('td')[net_quarter_number].text # 연간 매출액 값
     net_quarter_roe     = body_rows[17].find_all('td')[net_quarter_number].text # 연간 매출액 값
 
-    result              = {}
-    result['corp_name'] = {'title': '회사명',       'data': corp_name}
-    result['gicode']    = {'title': '종목코드',     'data': gicode}
-    result['revenue']   = {'title': revenue_title,  'data': {annual_header: format(annual_revenue), net_quarter_header: format(net_quarter_revenue)}}
-    result['profit']    = {'title': profit_title,   'data': {annual_header: format(annual_profit),  net_quarter_header: format(net_quarter_profit)}}
-    result['roe']       = {'title': roe_title,      'data': {annual_header: format(annual_roe),     net_quarter_header: format(net_quarter_roe)}}
+    result                      = {}
+    result['corp_name']         = {'title': '회사명',                                   'value': corp_name}
+    result['gicode']            = {'title': '종목코드',                                 'value': gicode}
+    result['annual_revenue']    = {'title': revenue_title + ' ' + annual_header,        'value': format(annual_revenue)}
+    result['annual_profit']     = {'title': profit_title + ' ' + annual_header,         'value': format(annual_profit)}
+    result['annual_roe']        = {'title': roe_title + ' ' + annual_header,            'value': format(annual_roe)}
+    result['quarter_revenue']   = {'title': revenue_title + ' ' + net_quarter_header,   'value': format(net_quarter_revenue)}
+    result['quarter_profit']    = {'title': profit_title + ' ' + net_quarter_header,    'value': format(net_quarter_profit)}
+    result['quarter_roe']       = {'title': roe_title + ' ' + net_quarter_header,       'value': format(net_quarter_roe)}
 
     return result
 
