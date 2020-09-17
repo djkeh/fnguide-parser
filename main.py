@@ -2,6 +2,7 @@
 
 import sys
 import requests
+import csv
 from bs4 import BeautifulSoup
 from pprint import pprint
 
@@ -51,6 +52,34 @@ def parse(text, gicode):
 def format(str):
     return str.replace('\xa0', '')
 
+def export_to_csv(data):
+    with open('data.csv', 'w', newline = '') as csvfile:
+        fieldnames = [ \
+            data['corp_name']['title'], \
+            data['gicode']['title'], \
+            data['annual_revenue']['title'], \
+            data['annual_profit']['title'], \
+            data['annual_roe']['title'], \
+            data['quarter_revenue']['title'], \
+            data['quarter_profit']['title'], \
+            data['quarter_roe']['title'] \
+            ]
+        
+        writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
+
+        writer.writeheader()
+        writer.writerow({ \
+            data['corp_name']['title']: data['corp_name']['value'], \
+            data['gicode']['title']: data['gicode']['value'], \
+            data['annual_revenue']['title']: data['annual_revenue']['value'], \
+            data['annual_profit']['title']: data['annual_profit']['value'], \
+            data['annual_roe']['title']: data['annual_roe']['value'], \
+            data['quarter_revenue']['title']: data['quarter_revenue']['value'], \
+            data['quarter_profit']['title']: data['quarter_profit']['value'], \
+            data['quarter_roe']['title']: data['quarter_roe']['value'] \
+            })
+
+
 def main():
     args = sys.argv[1:]
 
@@ -63,6 +92,7 @@ def main():
     data = parse(html, gicode)
 
     pprint(data)
+    export_to_csv(data)
 
 # Main body
 if __name__ == '__main__':
