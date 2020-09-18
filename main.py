@@ -5,14 +5,22 @@ import sys
 import requests
 import csv
 import logging
+from time import sleep
+from random import random
 from bs4 import BeautifulSoup
 from pprint import pprint
 
+
+def wait():
+    second = lambda : random() / 2 + 0.5
+    sleep(second())
 
 def get_html(gicode):
     url = 'https://comp.fnguide.com/SVO2/ASP/SVD_main.asp'
     param = {'gicode': gicode}
     r = requests.get(url, params = param)
+
+    wait()
 
     return r.text
 
