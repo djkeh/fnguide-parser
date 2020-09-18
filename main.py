@@ -30,16 +30,17 @@ def parse(text, gicode):
 
     soup = BeautifulSoup(text, "lxml")
 
+    if not soup.find(id = 'highlight_D_A'):
+        # 투자회사 종목은 금융감독원 전자공시시스템에 사업보고서를 공시하지 않아서 재무정보가 없다고 한다
+        return None
+ 
     corp_name           = soup.find(id = 'giName').text # 기업명
 
     header_rows         = soup.find(id = 'highlight_D_A').thead.find_all('tr')
     annual_header       = header_rows[1].find_all('th')[annual_number].span.text # Annual 헤더
     net_quarter_header  = header_rows[1].find_all('th')[net_quarter_number].span.text # Net Quarter 헤더
 
-    if not soup.find(id = 'highlight_D_A'):
-        # 투자회사 종목은 금융감독원 전자공시시스템에 사업보고서를 공시하지 않아서 재무정보가 없다고 한다
-        return None
-    
+   
     body_rows           = soup.find(id = 'highlight_D_A').tbody.find_all('tr')
     revenue_title       = body_rows[0].th.text # 매출액 타이틀
     profit_title        = body_rows[1].th.text # 영업이익 타이틀
