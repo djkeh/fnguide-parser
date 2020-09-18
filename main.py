@@ -65,8 +65,7 @@ def parse(text, gicode):
     return result
 
 def format(str):
-    val = str.replace(',', '')
-    return val if val.isnumeric() else ''
+    return str.strip().replace(',', '')
 
 def init_csv(data):
     with open('data.csv', 'w', newline = '', encoding = 'utf8') as csvfile:
