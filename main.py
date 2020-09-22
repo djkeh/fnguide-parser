@@ -27,6 +27,7 @@ def get_html(gicode):
 def parse(text, gicode):
     annual_number = 3
     net_quarter_number = 7
+    max_table_column_length = 8
 
     soup = BeautifulSoup(text, "lxml")
 
@@ -35,10 +36,15 @@ def parse(text, gicode):
         return None
 
     corp_name           = soup.find(id = 'giName').text # 기업명
-
     header_rows         = soup.find(id = 'highlight_D_A').thead.find_all('tr')
-    annual_header       = header_rows[1].find_all('th')[annual_number].span.text # Annual 헤더
-    net_quarter_header  = header_rows[1].find_all('th')[net_quarter_number].span.text # Net Quarter 헤더
+    header_titles       = header_rows[1].find_all('th')
+
+    if len(header_titles) != max_table_column_length:
+        # 일부 종목은 연간 보고자료가 나오지 않은 경우가 있다. 이 경우는 스킵
+        return None
+
+    annual_header       = header_titles[annual_number].span.text # Annual 헤더
+    net_quarter_header  = header_titles[net_quarter_number].span.text # Net Quarter 헤더
 
 
     body_rows           = soup.find(id = 'highlight_D_A').tbody.find_all('tr')
