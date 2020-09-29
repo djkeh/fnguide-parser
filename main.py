@@ -250,6 +250,8 @@ def main():
         if data:
             export_to_csv(data)
 
+    print('done.')
+
 
 if __name__ == '__main__':
     main()
